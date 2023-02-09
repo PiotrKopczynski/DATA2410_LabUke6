@@ -6,7 +6,7 @@ serverName = gethostbyname(gethostname())
 port = 12222
 addr = (serverName, port)
 
-#alias = input('Choose an alias >>>')
+nickname = input('Choose a nickname >>>')
 client = socket(AF_INET,SOCK_STREAM)
 try:
     client.connect((serverName,port))
@@ -18,7 +18,10 @@ def recieveBroadcast():
     while True:
         try:
             message = client.recv(1024).decode()
-            print("\nMessage from server: ", message)
+            if message == "Nickname:":
+                client.send(nickname.encode())
+            else:
+                print("\nSERVER: ", message)
         except:
             print("Broadcast error!")
             client.close()
@@ -26,7 +29,7 @@ def recieveBroadcast():
 
 def clientSend():
     while True:
-        message = input("Input:")
+        message = input("\nInput:")
         client.send(message.encode())
         if message=="exit":
             break

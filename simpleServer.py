@@ -24,7 +24,7 @@ def main():
     
     response = "Message recieved!"
     #send data back over the connection
-    conn_sd.send(response.encode());
+    conn_sd.send(response.encode())
 
 
     #Closing code

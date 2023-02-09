@@ -4,8 +4,8 @@ import _thread as thread
 import time
 
 clients = []
-newClientMessage = "A new user just joined the server! :O\n"
-#aliases = []
+nicknames = []
+players = []
 
 def now():
     """
@@ -13,12 +13,23 @@ def now():
     """
     return time.ctime(time.time())
 
-def broadcast(message):
-    for client in clients:
+def broadcast(message, clientList):
+    for client in clientList:
         client.send(message.encode())
 
 def game(players):
+    gameStartMessage = "The game has started! You are playing against: "
+    gameWinMessage = "Congratulations! You won! :D"
+    gameLoseMessage = "Better luck next time ;("
+    while True:
+        if len(players)==2:
+            player1Name = nicknames[players.index(players[0])]
+            player2Name = nicknames[players.index(players[1])]
+            players[0].send((gameStartMessage+player2Name).encode)
+            players[1].send((gameStartMessage+player1Name).encode)
+
     #to be implemented
+    time.sleep(2)
     for player in players:
         print("hei")
 
@@ -32,19 +43,25 @@ def handleClient(client, addr):
         try:
             message = client.recv(1024).decode()
             print(addr,"Recieved message: ",message)
+            client.send("Message was recieved!".encode())
             if message=="exit":
-                clients.remove(client)
-                client.close()
+                #clients.remove(client)
+                #client.close()
                 break
-            else:
-                client.send("Message was recieved!".encode())
+            elif message=="play!":
+                if len(players) < 2:
+                    players.append(client)
+                else:
+                    client.send("Game server is full ;(. Try again later.".encode())
         except:
-            #index = clients.index(client)
+            #remove the client and broadcast
+            index = clients.index(client)
             clients.remove(client)
             client.close()
-            #alias = aliases[index]
-            broadcast("A user has left the server ;(.")
-            #aliases.remove(alias)
+            nickname = nicknames[index]
+            leaveMessage = nickname + " has left the server ;(."
+            broadcast(leaveMessage, clients)
+            nicknames.remove(nickname)
             break
 
 
@@ -67,10 +84,17 @@ def main():
 
     while True:
         newClient, addr = serverSocket.accept()
-        newClient.send("You are now connected! :O".encode())
+        newClient.send("Nickname:".encode())
+        nickname = newClient.recv(1024).decode()
+        welcomeMessage = "Welcome " + nickname + "! You are now connected! :O "
+        newClient.send(welcomeMessage.encode())
+        nicknames.append(nickname)
         print("SERVER CONNECTED TO BY ", addr)
         print(" AT ", now())
-        broadcast(newClientMessage)
+        try:
+            broadcast(nicknames[len(nicknames)-1]+" just joined the server! :O\n", clients)
+        except:
+            print("Nicknames list is empty!")
         clients.append(newClient)
         print("AMOUNT OF CURRENT USERS: ",len(clients))
 

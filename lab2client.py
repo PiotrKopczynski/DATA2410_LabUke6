@@ -1,6 +1,7 @@
 from socket import *
 import sys
 import threading
+import time
 
 serverName = gethostbyname(gethostname())
 port = 12222
@@ -21,17 +22,19 @@ def recieveBroadcast():
             if message == "Nickname:":
                 client.send(nickname.encode())
             else:
-                print("\nSERVER: ", message)
+                print(message)
         except:
-            print("Broadcast error!")
+            #print("Broadcast error!")
             client.close()
             break
 
 def clientSend():
     while True:
-        message = input("\nInput:")
+        #message = f'{nickname}: {input("")}'
+        message = input("")
         client.send(message.encode())
-        if message=="exit":
+        if message == "exit":
+            print("You have exited the server.")
             break
     client.close()
 

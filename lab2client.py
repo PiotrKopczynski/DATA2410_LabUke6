@@ -4,7 +4,7 @@ import threading
 import time
 
 serverName = gethostbyname(gethostname())
-port = 12222
+port = 12220
 addr = (serverName, port)
 
 nickname = input('Choose a nickname >>>')

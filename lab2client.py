@@ -1,14 +1,14 @@
 from socket import *
 import sys
 import threading
-import time
 
-serverName = gethostbyname(gethostname())
+serverName = gethostbyname(gethostname()) # This function automatically fetches the local IP
 port = 12220
 addr = (serverName, port)
 
-nickname = input('Choose a nickname >>>')
+nickname = input('Choose a nickname >>>') # The user inputs a nickname that will be used by the server
 client = socket(AF_INET,SOCK_STREAM)
+
 try:
     client.connect((serverName,port))
 except:
@@ -16,6 +16,11 @@ except:
     sys.exit()
 
 def recieveBroadcast():
+    """
+    Function: A function for recieving messages from the server.
+    Exceptions: If the function fails to recieve a message from the server,
+    the client socket is closed and the while loop is stopped.
+    """
     while True:
         try:
             message = client.recv(1024).decode()
@@ -24,11 +29,13 @@ def recieveBroadcast():
             else:
                 print(message)
         except:
-            #print("Broadcast error!")
             client.close()
             break
 
 def clientSend():
+    """
+    Function: A function for sending messages to the server.
+    """
     while True:
         #message = f'{nickname}: {input("")}'
         message = input("")

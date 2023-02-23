@@ -146,6 +146,7 @@ def handleClient(client, addr):
 
             nickname = nicknames[index] # nickname of the removed client
             leaveMessage = nickname + " has left the server ;(."
+            print("AMOUNT OF CURRENT USERS: ", len(clients)) 
             broadcast(leaveMessage, clients)
             nicknames.remove(nickname)
             break
